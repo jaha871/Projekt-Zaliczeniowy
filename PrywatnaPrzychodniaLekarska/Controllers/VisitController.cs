@@ -13,6 +13,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
 {
     [ApiController]
     [Route("visits")]
+    [Authorize]
     public class VisitController: ControllerBase
     {
         private ICrudScheme<VisitServices> _service;

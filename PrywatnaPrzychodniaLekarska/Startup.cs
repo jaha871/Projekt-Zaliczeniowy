@@ -9,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,7 +19,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PrywatnaPrzychodniaLekarska.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using PrywatnaPrzychodniaEntities;
 using PrywatnaPrzychodniaEntities.Entities;
 using PrywatnaPrzychodniaLekarska.Contracts;
@@ -66,22 +67,53 @@ namespace PrywatnaPrzychodniaLekarska
                 cfg.TokenValidationParameters = tokenValidationParameters;
             });
 
+            services.AddScoped<PrzychodniaLekarskaSeeder>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICrudScheme<PatientService>, PatientService>();
             services.AddScoped<ICrudScheme<DoctorsServices>, DoctorsServices>();
             services.AddScoped<ICrudScheme<VisitServices>, VisitServices>();
             services.AddScoped<ICrudScheme<UserService>, UserService>();
+            services.AddScoped<ILoginService, LoginService>();
             services.AddControllers();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(setup =>
+            {
+                // Include 'SecurityScheme' to use JWT Authentication
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Przoszê wprowadziæ  **_tylko_** sam klucz token!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+
+            });
+
+
             var connectionString = Configuration.GetConnectionString("PrywatnaPrzychodniaDB");
             services.AddDbContext<PrywatnaPrzychodniaDbContext>(options => options.UseSqlServer(connectionString));
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PrzychodniaLekarskaSeeder seeder)
         {
+            seeder.Seed();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

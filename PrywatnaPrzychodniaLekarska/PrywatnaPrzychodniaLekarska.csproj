@@ -16,11 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exeptions\" />
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PrywatnaPrzychodniaEntities\PrywatnaPrzychodniaEntities.csproj" />
   </ItemGroup>
 

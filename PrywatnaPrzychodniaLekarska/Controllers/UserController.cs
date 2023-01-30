@@ -12,6 +12,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
 {
     [ApiController]
     [Route("users")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private ICrudScheme<UserService> _service;
@@ -22,7 +23,8 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] VisitModel model)
+        [Authorize(Roles = "admin")]
+        public ActionResult Create([FromBody] UserModel model)
         {
             var result = _service.Create(model);
 
@@ -30,7 +32,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         }
 
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "admin, user")]
+        [Authorize(Roles = "admin")]
         public ActionResult Delete([FromRoute] int id)
         {
             var result = _service.Delete(id);
@@ -41,14 +43,13 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         [AllowAnonymous]
         public ActionResult<List<GetVisitModel>> Get()
         {
-            var result = _service.Get<GetVisitModel>();
+            var result = _service.Get<UserModel>();
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        //  [Authorize(Roles = "admin")]
-        //[Authorize]
-        public ActionResult Update([FromBody] VisitModel dto, [FromRoute] int id)
+        [Authorize(Roles = "admin")]
+        public ActionResult Update([FromBody] UserModel dto, [FromRoute] int id)
         {
             var result = _service.Update(id, dto);
 

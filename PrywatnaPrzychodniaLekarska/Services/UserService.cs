@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using PrywatnaPrzychodniaEntities;
 using PrywatnaPrzychodniaEntities.Entities;
 using PrywatnaPrzychodniaLekarska.Contracts;
+using PrywatnaPrzychodniaLekarska.Exeptions;
 using PrywatnaPrzychodniaLekarska.Models;
 
 namespace PrywatnaPrzychodniaLekarska.Services
@@ -13,8 +15,11 @@ namespace PrywatnaPrzychodniaLekarska.Services
     public class UserService : ConnectionService, ICrudScheme<UserService>
     {
         private IPasswordHasher<User> _passwordHasher;
-        public UserService(PrywatnaPrzychodniaDbContext context, IPasswordHasher<User> passwordHasher) : base(context)
+        private IMapper _mapper;
+
+        public UserService(PrywatnaPrzychodniaDbContext context, IPasswordHasher<User> passwordHasher, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
             _passwordHasher = passwordHasher;
         }
 
@@ -47,17 +52,45 @@ namespace PrywatnaPrzychodniaLekarska.Services
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            var user = _context.Users.Where(x => x.Id == id)?.FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new NotFoundException($"Brak użytkownika o podanym id:{id}");
+            }
+            _context.Remove(user);
+            _context.SaveChanges();
+            return true;
         }
 
         public List<TV> Get<TV>()
         {
-            throw new NotImplementedException();
+            var user = _context.Users.ToList();
+            return _mapper.Map<List<TV>>(user);
         }
 
         public bool Update<TV>(int id, TV model)
         {
-            throw new NotImplementedException();
+            var userDto = model as UserModel;
+            var user = _context.Users.Where(x => x.Id == id)?.FirstOrDefault();
+            if (user == null)
+            {
+                throw new NotFoundException($"Brak użytkownika o podanym id:{id}");
+            }
+
+            user.Email = userDto.Email;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Password = userDto.Password;
+            user.Role = userDto.Role;
+
+            var hashedPassword = _passwordHasher.HashPassword(user, userDto.Password);
+            user.Password = hashedPassword;
+
+            _context.Update(user);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }

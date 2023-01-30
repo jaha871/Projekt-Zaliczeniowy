@@ -12,6 +12,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
 {
     [ApiController]
     [Route("doctors")]
+    [Authorize]
     public class DoctorsController : ControllerBase
     {
         private ICrudScheme<DoctorsServices> _service;
@@ -22,6 +23,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, user")]
         public ActionResult Create([FromBody] DoctorModel model)
         {
             var result = _service.Create(model);
@@ -30,7 +32,7 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         }
 
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "admin, user")]
+        [Authorize(Roles = "admin")]
         public ActionResult Delete([FromRoute] int id)
         {
             var result = _service.Delete(id);
@@ -46,8 +48,8 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
         }
 
         [HttpPut("{id}")]
-        //  [Authorize(Roles = "admin")]
-        //[Authorize]
+        [Authorize(Roles = "admin")]
+ 
         public ActionResult Update([FromBody] DoctorModel dto, [FromRoute] int id)
         {
             var result = _service.Update(id, dto);
