@@ -8,6 +8,7 @@ namespace PrywatnaPrzychodniaLekarska.Models
 {
     public class VisitModel
     {
+        public int Id { get; set; }
         [Required]
         public int DoctorId { get; set; }
         [Required]
@@ -16,7 +17,7 @@ namespace PrywatnaPrzychodniaLekarska.Models
         public int PatientId { get; set; }
         public string Description { get; set; }
         public int Discount { get; set; }
-        [Required]
+
         public double VisitPrice { get; set; }
 
     }

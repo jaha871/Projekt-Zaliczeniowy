@@ -22,6 +22,7 @@ using PrywatnaPrzychodniaLekarska.Authorization;
 using PrywatnaPrzychodniaEntities;
 using PrywatnaPrzychodniaEntities.Entities;
 using PrywatnaPrzychodniaLekarska.Contracts;
+using PrywatnaPrzychodniaLekarska.Middleware;
 using PrywatnaPrzychodniaLekarska.Services;
 
 
@@ -76,6 +77,7 @@ namespace PrywatnaPrzychodniaLekarska
             services.AddScoped<ICrudScheme<UserService>, UserService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddControllers();
+            services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen(setup =>
             {
                 // Include 'SecurityScheme' to use JWT Authentication
@@ -118,6 +120,8 @@ namespace PrywatnaPrzychodniaLekarska
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseAuthentication();
             app.UseHttpsRedirection();

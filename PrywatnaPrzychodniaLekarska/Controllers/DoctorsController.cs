@@ -47,6 +47,14 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "admin, user")]
+        public ActionResult<DoctorModel> GetDoctor([FromRoute] int id)
+        {
+            var result = _service.GetById<DoctorModel>(id);
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
  

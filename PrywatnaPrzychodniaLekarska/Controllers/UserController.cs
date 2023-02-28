@@ -47,6 +47,14 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "admin, user")]
+        public ActionResult<UserModel> GetById([FromRoute] int id)
+        {
+            var result = _service.GetById<UserModel>(id);
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
         public ActionResult Update([FromBody] UserModel dto, [FromRoute] int id)

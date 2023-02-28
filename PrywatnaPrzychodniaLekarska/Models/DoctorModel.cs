@@ -8,6 +8,7 @@ namespace PrywatnaPrzychodniaLekarska.Models
 {
     public class DoctorModel
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }

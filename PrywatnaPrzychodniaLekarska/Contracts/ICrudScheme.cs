@@ -12,5 +12,6 @@ namespace PrywatnaPrzychodniaLekarska.Contracts
         bool Delete(int id);
         public List<TV> Get<TV>();
         bool Update<TV>(int id, TV model);
+        public TV GetById<TV>(int id);
     }
 }

@@ -92,5 +92,11 @@ namespace PrywatnaPrzychodniaLekarska.Services
 
             return true;
         }
+
+        public TV GetById<TV>(int id)
+        {
+            var value = _context.Users.FirstOrDefault(x => x.Id == id);
+            return _mapper.Map<TV>(value);
+        }
     }
 }

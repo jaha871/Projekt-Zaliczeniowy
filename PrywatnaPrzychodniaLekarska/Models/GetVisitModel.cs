@@ -7,6 +7,7 @@ namespace PrywatnaPrzychodniaLekarska.Models
 {
     public class GetVisitModel
     {
+        public int Id { get; set; }
         public string DoctorName { get; set; }
         public string DoctorSurname { get; set; }
         public string Specialization { get; set; }

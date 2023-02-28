@@ -25,10 +25,9 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin, user")]
-
         public ActionResult Create([FromBody] PatientModel model)
         {
-            var result = _service.Create(model);
+            var result = _service.Create<PatientModel>(model);
 
             return Ok(result);
         }
@@ -49,7 +48,15 @@ namespace PrywatnaPrzychodniaLekarska.Controllers
            return Ok(result);
        }
 
-       [HttpPut("{id}")]
+       [HttpGet("{id}")]
+       [Authorize(Roles = "admin, user")]
+       public ActionResult<PatientModel> GetById([FromRoute] int id)
+       {
+           var result = _service.GetById<PatientModel>(id);
+           return Ok(result);
+       }
+
+        [HttpPut("{id}")]
        [Authorize(Roles = "admin")]
        public ActionResult Update([FromBody] PatientModel dto, [FromRoute] int id)
        {

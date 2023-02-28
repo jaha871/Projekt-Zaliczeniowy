@@ -1,0 +1,148 @@
+﻿
+@model IEnumerable<DoctorModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<style>
+    body {
+        background: #121212;
+        font-family: sans-serif;
+        color: #ccc;
+        padding: 15px
+    }
+
+    .table > thead > tr > th {
+        border-bottom: none;
+    }
+
+    .exotic-table {
+        color: #fff;
+        background: #191919;
+        text-align: center;
+        border: none;
+    }
+
+        .exotic-table thead tr {
+            border: 2px #333 outset;
+            text-align: center;
+        }
+
+        .exotic-table thead > tr > th {
+            text-align: center;
+        }
+
+        .exotic-table tbody {
+            border: 2px outset #333;
+            border-top: none
+        }
+
+            .exotic-table tbody tr {
+                background: #222;
+            }
+
+                .exotic-table tbody tr:hover {
+                    box-shadow: 0 0 20px #000;
+                    background: #1a1a1a;
+                }
+
+                .exotic-table tbody tr td {
+                    border-bottom: 2px outset #333;
+                }
+
+    .table-responsive {
+        border: none;
+    }
+
+    .popover {
+        color: #000
+    }
+
+    a.td-price {
+        color: #fff;
+        border-bottom: 1px dotted #ccc
+    }
+
+    .green {
+        color: #47e900
+    }
+
+    .red {
+        color: #f00808
+    }
+
+    .paleyellow {
+        color: #f8d97c
+    }
+
+    .purple {
+        color: #b461ff
+    }
+
+    .turquoise {
+        color: #52edff
+    }
+</style>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="row">
+        <div class="table-responsive">
+            <table id="main-table" class="table exotic-table">
+                <thead>
+                    <tr class="text-center">
+                        <th> @Html.DisplayNameFor(model => model.Id)</th>
+                        <th>@Html.DisplayNameFor(model => model.Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.Surname)</th>
+                        <th>@Html.DisplayNameFor(model => model.Specialization)</th>
+                        <th>@Html.DisplayNameFor(model => model.Street)</th>
+                        <th>@Html.DisplayNameFor(model => model.HouseNumber)</th>
+                        <th>@Html.DisplayNameFor(model => model.PostCode)</th>
+                        <th>@Html.DisplayNameFor(model => model.City)</th>
+                        <th>@Html.DisplayNameFor(model => model.Country)</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td> @Html.DisplayFor(modelItem => item.Id)</td>
+                        <td> @Html.DisplayFor(modelItem => item.Name)</td>
+                        <td> @Html.DisplayFor(modelItem => item.Surname)</td>
+                        <td> @Html.DisplayFor(modelItem => item.Specialization)</td>
+                        <td> @Html.DisplayFor(modelItem => item.Street)</td>
+                        <td> @Html.DisplayFor(modelItem => item.HouseNumber)</td>
+                        <td> @Html.DisplayFor(modelItem => item.PostCode)</td>
+                        <td> @Html.DisplayFor(modelItem => item.City)</td>
+                        <td> @Html.DisplayFor(modelItem => item.Country)</td>
+                        <td style="text-align: right">
+                            <form asp-action="Delete" asp-route-id="@item.Id">
+                                <input type="hidden" asp-for="@item" />
+                                <input type="submit" value="Usuń" class="btn btn-danger" />
+                            </form>
+                            <form asp-action="Edit" asp-route-id="@item.Id">
+                                <input type="hidden" asp-for="@item.Name" />
+                                <input type="submit" value="Edytuj" class="btn btn-success" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+                <p>
+                    <a asp-action="Create" class="btn btn-success">Dodaj doktora</a>
+                </p>
+            </table>
+        </div>
+    </div>
+    <script>
+    $(document).ready(function () {
+            $('[data-toggle="popover"]').popover({ title: "Payment Modes", html: true, placement: "left" });
+        });</script>
+</div>

@@ -4,10 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PrywatnaPrzychodniaEntities;
 using PrywatnaPrzychodniaEntities.Entities;
 using PrywatnaPrzychodniaLekarska.Contracts;
+using PrywatnaPrzychodniaLekarska.Exeptions;
 using PrywatnaPrzychodniaLekarska.Models;
 
 namespace PrywatnaPrzychodniaLekarska.Services
@@ -24,6 +26,10 @@ namespace PrywatnaPrzychodniaLekarska.Services
         public bool Create<TV>(TV userModel)
         {
             var visitDto = userModel as VisitModel;
+            if (visitDto.Discount < 10)
+            {
+                throw new BadRequestException("Cena jest nie jest poprawna. Musi być wieksza od 10zł"); ;
+            }
             var visit = new Visit
             {
                 PatientId = visitDto.PatientId,
@@ -89,6 +95,17 @@ namespace PrywatnaPrzychodniaLekarska.Services
             }
 
             return false;
+        }
+
+        public TV GetById<TV>(int id)
+        {
+            var value = _context.Visits
+                .Include(x => x.Price)
+                .Include(x => x.Patient)
+                .Include(x => x.Doctor)
+                .Include(x => x.Patient.Address)
+                .FirstOrDefault(x => x.Id == id);
+            return _mapper.Map<TV>(value);
         }
     }
 }
